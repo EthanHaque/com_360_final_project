@@ -30,6 +30,7 @@
             matplotlib
             numpy
             pandas
+            structlog
           ]);
         in {
           default = devenv.lib.mkShell {
