@@ -26,12 +26,13 @@
         let
           pkgs = nixpkgs.legacyPackages.${system};
 
-          pythonDeps = pkgs.python312.withPackages (ps: with ps; [
+          pythonDeps = pkgs.python311.withPackages (ps: with ps; [
             matplotlib
             numpy
             pandas
             structlog
             polars
+            pyarrow
           ]);
         in {
           default = devenv.lib.mkShell {
@@ -45,7 +46,6 @@
 
                 languages.python = {
                   enable  = true;
-                  version = "3.12.8";
                   uv.enable = true;
                   venv = {
                     enable = true;

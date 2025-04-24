@@ -3,8 +3,8 @@ name = "com360"
 version = "0.1.0"
 description = ""
 readme = "README.md"
-requires-python = "==3.12.8"
-dependencies = [ "numpy", "matplotlib", "pandas", "structlog", "polars" ]
+requires-python = ">=3.11"
+dependencies = [ "numpy", "matplotlib", "pandas", "structlog", "polars", "pyarrow" ]
 
 
 [project.optional-dependencies]
