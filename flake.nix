@@ -26,7 +26,7 @@
         let
           pkgs = nixpkgs.legacyPackages.${system};
 
-          pythonDeps = pkgs.python311.withPackages (ps: with ps; [
+          pythonDeps = pkgs.python312.withPackages (ps: with ps; [
             matplotlib
             numpy
             pandas
@@ -42,10 +42,12 @@
                 packages = with pkgs; [
                   pre-commit
                   pythonDeps
+                  openssl
                 ];
 
                 languages.python = {
                   enable  = true;
+                  version = "3.12.8";
                   uv.enable = true;
                   venv = {
                     enable = true;
