@@ -334,11 +334,10 @@ def main() -> None:
         finally:
             log.info("--- Finished task: %s ---", task["input_name"])
 
-    log.info("=" * 30 + " Conversion Summary " + "=" * 30)
+    log.info("Conversion Done")
     log.info("Total tasks: %d", len(conversion_tasks))
     log.info("Successful conversions: %d", successful_conversions)
     log.info("Failed conversions: %d", failed_conversions)
-    log.info("=" * 78)
 
     if failed_conversions > 0:
         sys.exit(1)
