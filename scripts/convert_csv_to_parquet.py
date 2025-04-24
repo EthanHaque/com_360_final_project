@@ -83,7 +83,7 @@ def convert_csv_to_parquet(
     parquet_path : Path
         Path where the output Parquet file will be saved.
     schema : dict[str, pl.DataType]
-        The predefined schema for the CSV file.
+        The predefined schema for the CSV file. Passed to `pl.scan_csv`.
     compression : str, optional
         The compression algorithm to use for the Parquet file,
         by default DEFAULT_PARQUET_COMPRESSION ('zstd').
@@ -114,7 +114,7 @@ def convert_csv_to_parquet(
     try:
         lazy_df = pl.scan_csv(
             csv_path,
-            dtypes=schema,
+            schema=schema,
             infer_schema_length=0,
             try_parse_dates=False,
             low_memory=True,
