@@ -49,7 +49,7 @@ This project analyzes the [Google Web Search Copyright Removals](https://transpa
 
 1.  **Download the Data:** The dataset is provided as a ZIP archive from Google's Transparency Report. Download it using `wget` or your browser:
     ```bash
-    wget [https://storage.googleapis.com/transparencyreport/google-websearch-copyright-removals.zip](https://storage.googleapis.com/transparencyreport/google-websearch-copyright-removals.zip)
+    wget https://storage.googleapis.com/transparencyreport/google-websearch-copyright-removals.zip
     ```
     * **Note:** This is a large file (tens of gigabytes when uncompressed). Ensure you have sufficient disk space.
 
