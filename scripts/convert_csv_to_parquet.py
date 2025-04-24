@@ -136,6 +136,7 @@ def convert_csv_to_parquet(
             duration_sec=round(duration, 2),
             output_path=str(parquet_path),
         )
+
         try:
             csv_size_mb = csv_path.stat().st_size / (1024 * 1024)
             parquet_size_mb = parquet_path.stat().st_size / (1024 * 1024)
@@ -147,8 +148,12 @@ def convert_csv_to_parquet(
         except Exception as stat_e:
             log.warning("Could not retrieve file sizes.", error=str(stat_e))
 
-    except pl.PolarsError:
-        log.exception("Polars error during conversion.")
+    except pl.PolarsError as e:
+        log.error(
+            "Polars error during conversion.",
+            error_type=type(e).__name__,
+            details=str(e),
+        )
         raise
     except Exception:
         log.exception("An unexpected error occurred during conversion.")
