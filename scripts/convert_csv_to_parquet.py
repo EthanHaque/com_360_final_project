@@ -27,8 +27,9 @@ except ImportError as e:
     sys.exit(1)
 
 
-DEFAULT_INPUT_FILENAME = "requests.csv"
-DEFAULT_OUTPUT_FILENAME = "requests.parquet"
+DATA_DIR = Path("data") / "google-websearch-copyright-removals"
+DEFAULT_INPUT_FILENAME = DATA_DIR / "requests.csv"
+DEFAULT_OUTPUT_FILENAME = DATA_DIR / "requests.parquet"
 DEFAULT_PARQUET_COMPRESSION = "zstd"
 
 
