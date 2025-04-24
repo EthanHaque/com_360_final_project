@@ -108,3 +108,5 @@ src/.DS_Store
 .devenv
 
 logs/
+
+data/
