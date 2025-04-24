@@ -3,7 +3,7 @@ name = "com360"
 version = "0.1.0"
 description = ""
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 dependencies = [ "numpy", "matplotlib", "pandas", "structlog", "polars", "pyarrow" ]
 
 
@@ -34,7 +34,7 @@ testpaths = [
 [tool.mypy]
 mypy_path = ["src"]
 files = ["src", "tests"]
-python_version = "3.13"
+python_version = "3.12"
 warn_unused_configs = true
 strict = true
 enable_error_code = ["ignore-without-code", "redundant-expr", "truthy-bool"]
