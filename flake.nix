@@ -31,6 +31,7 @@
             numpy
             pandas
             structlog
+            polars
           ]);
         in {
           default = devenv.lib.mkShell {
