@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Logging setup for data analysis tasks using structlog for rich console output.
 
@@ -11,7 +10,6 @@ import logging
 import logging.config
 import os
 import sys
-from typing import Optional
 
 import structlog
 from structlog.types import Processor
@@ -67,7 +65,7 @@ def _configure_stdlib_logging(log_level: str) -> None:
     logging.config.dictConfig(logging_config)
 
 
-def setup_logging(level: Optional[str] = None) -> None:
+def setup_logging(level: str | None = None) -> None:
     """
     Configure logging and structlog for console output.
 
@@ -96,7 +94,7 @@ def setup_logging(level: Optional[str] = None) -> None:
     )
 
 
-def get_logger(name: Optional[str] = None) -> structlog.stdlib.BoundLogger:
+def get_logger(name: str | None = None) -> structlog.stdlib.BoundLogger:
     """
     Get a structlog logger instance, integrated with standard library logging.
 
