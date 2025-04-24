@@ -1,7 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Converts large Google Copyright Removal CSV files (requests, domains,
-urls-no-action-taken) into the more efficient Parquet format using Polars.
+"""Converts large Google Copyright Removal CSV files into Parquet.
 
 This script is designed to handle potentially larger-than-memory CSV files
 by utilizing Polars' scanning and streaming capabilities (`scan_csv` and
@@ -12,12 +9,11 @@ import argparse
 import sys
 from pathlib import Path
 from time import perf_counter
-from typing import Dict
 
 import polars as pl
 
 try:
-    from com360.logging_config import setup_logging, get_logger
+    from com360.logging_config import get_logger, setup_logging
 except ImportError as e:
     print(
         f"Error: Could not import logging configuration from 'com360.logging_config'. "
@@ -33,12 +29,12 @@ DEFAULT_INPUT_DIR = DEFAULT_BASE_DATA_DIR
 DEFAULT_OUTPUT_DIR = DEFAULT_BASE_DATA_DIR
 DEFAULT_PARQUET_COMPRESSION = "zstd"
 
-SchemaDict = Dict[str, pl.DataType]
+SchemaDict = dict[str, pl.DataType]
 
 
 def get_requests_schema() -> SchemaDict:
     """
-    Defines the expected schema for the requests.csv file.
+    Define the expected schema for the requests.csv file.
 
     Specifying the schema upfront is crucial for performance and memory
     efficiency when scanning large files, as it avoids type inference.
@@ -69,7 +65,7 @@ def get_requests_schema() -> SchemaDict:
 
 def get_domains_schema() -> SchemaDict:
     """
-    Defines the expected schema for the domains.csv file.
+    Define the expected schema for the domains.csv file.
 
     Returns
     -------
@@ -92,7 +88,7 @@ def get_domains_schema() -> SchemaDict:
 
 def get_urls_no_action_schema() -> SchemaDict:
     """
-    Defines the schema for the urls-no-action-taken.csv file.
+    Define the schema for the urls-no-action-taken.csv file.
 
     Returns
     -------
@@ -118,7 +114,7 @@ def convert_csv_to_parquet(
     compression: str = DEFAULT_PARQUET_COMPRESSION,
 ) -> bool:
     """
-    Converts a CSV file to Parquet format using Polars streaming.
+    Convert a CSV file to Parquet format using Polars streaming.
 
     Reads the CSV lazily using `scan_csv` and writes directly to Parquet
     using `sink_parquet` to handle files potentially larger than memory.
@@ -152,7 +148,8 @@ def convert_csv_to_parquet(
 
     if not csv_path.is_file():
         log.error("Input CSV file not found.", path=str(csv_path))
-        raise FileNotFoundError(f"Input CSV file not found at: {csv_path}")
+        msg = f"Input CSV file not found at: {csv_path}"
+        raise FileNotFoundError(msg)
 
     parquet_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -178,7 +175,9 @@ def convert_csv_to_parquet(
             log.debug("Applying date parsing transformation.")
             lazy_df = lazy_df.with_columns(
                 pl.col("Date")
-                .str.strptime(pl.Datetime, format="%Y-%m-%dT%H:%M:%SZ", strict=True)
+                .str.strptime(
+                    pl.Datetime, format="%Y-%m-%dT%H:%M:%SZ", strict=True
+                )
                 .alias("Date")
             )
 
@@ -215,17 +214,15 @@ def convert_csv_to_parquet(
         )
     except Exception:
         log.exception(
-            "An unexpected error occurred during conversion.", input_path=str(csv_path)
+            "An unexpected error occurred during conversion.",
+            input_path=str(csv_path),
         )
 
     return False
 
 
 def main() -> None:
-    """
-    Parses command-line arguments and initiates the conversion process
-    for predefined CSV files.
-    """
+    """Initiate the conversion process for predefined CSV files."""
     parser = argparse.ArgumentParser(
         description="Convert large Google Copyright CSV files to Parquet format.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
@@ -323,7 +320,8 @@ def main() -> None:
                 )
         except FileNotFoundError:
             log.error(
-                "Skipping task due to FileNotFoundError.", task=task["input_name"]
+                "Skipping task due to FileNotFoundError.",
+                task=task["input_name"],
             )
             failed_conversions += 1
         except Exception:
