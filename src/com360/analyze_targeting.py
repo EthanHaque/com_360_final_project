@@ -51,7 +51,6 @@ def categorize_domain(domain: str | None) -> str:
     str
         Return the inferred platform category string.
     """
-    # This function remains the same as it operates element-wise
     if domain is None:
         return "Unknown"
     domain_lower = domain.lower()
