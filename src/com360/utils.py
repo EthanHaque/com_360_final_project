@@ -3,10 +3,10 @@
 from pathlib import Path
 from time import perf_counter
 
+import matplotlib.font_manager as fm
 import matplotlib.pyplot as plt
 import polars as pl
 from matplotlib import rcParams
-import matplotlib.font_manager as fm
 
 from com360.logging_config import get_logger
 

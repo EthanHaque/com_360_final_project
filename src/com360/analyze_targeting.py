@@ -1,22 +1,17 @@
-"""
-Analyze DMCA takedown targeting strategies and their evolution over time
-using Polars Lazy API for memory efficiency.
-"""
+"""Analyze DMCA takedown targeting strategies and their evolution over time."""
 
 import sys
 from pathlib import Path
-from time import perf_counter
 
 import matplotlib.pyplot as plt
 import polars as pl
-import pandas as pd
 
 from com360.logging_config import get_logger, setup_logging
 from com360.utils import (
+    DEFAULT_BASE_PLOT_DIR,
+    DEFAULT_DATA_DIR,
     apply_plot_styling,
     save_plot,
-    DEFAULT_DATA_DIR,
-    DEFAULT_BASE_PLOT_DIR,
 )
 
 MODULE_PLOT_DIR = DEFAULT_BASE_PLOT_DIR / "targeting_lazy"
