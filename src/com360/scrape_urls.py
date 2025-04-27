@@ -2,9 +2,9 @@
 
 import argparse
 import asyncio
+import io
 import signal
 import sys
-import io
 from contextlib import AsyncExitStack, suppress
 from pathlib import Path
 from time import perf_counter
