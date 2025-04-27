@@ -4,6 +4,7 @@ import argparse
 import asyncio
 import signal
 import sys
+import io
 from contextlib import AsyncExitStack, suppress
 from pathlib import Path
 from time import perf_counter
@@ -26,7 +27,7 @@ DEFAULT_INPUT_FILENAME = "requests.parquet"
 DEFAULT_URL_COLUMN = "Lumen URL"
 DEFAULT_OUTPUT_DIR = Path("data") / "scraped_warc"
 DEFAULT_RESUME_DIR = Path("data") / "scraper_state"
-DEFAULT_CONCURRENCY = 50
+DEFAULT_CONCURRENCY = 1
 DEFAULT_TIMEOUT_SEC = 30
 DEFAULT_RETRIES = 3
 DEFAULT_RETRY_DELAY_SEC = 2
@@ -253,10 +254,11 @@ async def write_warc_record(
         The response body content.
     """
     try:
+        payload_stream = io.BytesIO(payload)
         response_record = writer.create_warc_record(
             url,
             "response",
-            payload=payload,
+            payload=payload_stream,
             http_headers=warc_headers,
         )
         async with warc_writer_lock:
@@ -491,7 +493,7 @@ async def main_async(args: argparse.Namespace):
         estimated_total = 0
         try:
             count_df = (
-                pl.scan_parquet(args.input_path).select(pl.count()).collect()
+                pl.scan_parquet(args.input_path).select(pl.len()).collect()
             )
             estimated_total = count_df[0, 0] - initial_completed_count
             if estimated_total < 0:
@@ -502,14 +504,10 @@ async def main_async(args: argparse.Namespace):
         except Exception as e:
             log.warning(f"Could not estimate total URLs: {e}")
 
-        progress_bar = (
-            await stack.enter_async_context(  # This line causes the error
-                tqdm_asyncio(
-                    total=estimated_total if estimated_total > 0 else None,
-                    unit=" URL",
-                    desc="Scraping",
-                )
-            )
+        progress_bar = tqdm_asyncio(
+            total=estimated_total if estimated_total > 0 else None,
+            unit=" URL",
+            desc="Scraping",
         )
 
         producer_task = asyncio.create_task(
