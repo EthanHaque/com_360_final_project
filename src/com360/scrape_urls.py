@@ -446,13 +446,22 @@ async def url_producer(
         log.info("Producer signaling end of queue...")
 
 
-def handle_signal(signum, frame):
-    """Set the shutdown event upon receiving SIGINT or SIGTERM."""
-    log.warning(f"Received signal {signum}, initiating graceful shutdown...")
-    shutdown_event.set()
+def build_signal_handler(queue: asyncio.Queue, n_workers: int):
+    """Return a signal handler that knows the queue + worker count."""
+
+    def handle_signal(signum, frame):
+        log.warning("Signal %s received – shutting down…", signum)
+        shutdown_event.set()
+        loop = asyncio.get_running_loop()
+        for _ in range(n_workers):
+            loop.call_soon_threadsafe(queue.put_nowait, None)
+
+    return handle_signal
 
 
-async def main_async(args: argparse.Namespace):
+async def main_async(
+    queue: asyncio.Queue[str | None], args: argparse.Namespace
+):
     """Asynchronous function to set up and run the scraper."""
     start_time = perf_counter()
     log.info("Starting asynchronous web scraper.", args=vars(args))
@@ -470,10 +479,6 @@ async def main_async(args: argparse.Namespace):
 
     completed_urls = await load_completed_urls(resume_file)
     initial_completed_count = len(completed_urls)
-
-    queue: asyncio.Queue[str | None] = asyncio.Queue(
-        maxsize=args.concurrency * 2
-    )
 
     async with AsyncExitStack() as stack:
         connector = aiohttp.TCPConnector(
@@ -668,11 +673,12 @@ def main():
 
     setup_logging(level=args.log_level)
 
-    signal.signal(signal.SIGINT, handle_signal)
-    signal.signal(signal.SIGTERM, handle_signal)
+    queue: asyncio.Queue[str | None] = asyncio.Queue()
+    signal.signal(signal.SIGINT, build_signal_handler(queue, args.concurrency))
+    signal.signal(signal.SIGTERM, build_signal_handler(queue, args.concurrency))
 
     try:
-        asyncio.run(main_async(args))
+        asyncio.run(main_async(queue, args))
     except KeyboardInterrupt:
         log.warning("KeyboardInterrupt caught in main.")
     except Exception:
