@@ -414,7 +414,7 @@ async def url_producer(
                 total_queued += 1
                 # Avoid queue getting excessively large if workers are slow
                 if queue.qsize() > batch_size * 5:  # Heuristic threshold
-                    log.info("Queue size large, pausing producer briefly...")
+                    log.debug("Queue size large, pausing producer briefly...")
                     await asyncio.sleep(1)
 
                 if shutdown_event.is_set():
