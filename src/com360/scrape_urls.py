@@ -566,7 +566,6 @@ async def main_async(
     final_completed_urls = await load_completed_urls(resume_file)
     newly_completed = len(final_completed_urls) - initial_completed_count
 
-    log.info("--- Scraping Summary ---")
     log.info(f"Total duration: {duration:.2f} seconds")
     log.info(f"Input Parquet: {args.input_path}")
     log.info(
