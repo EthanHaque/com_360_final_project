@@ -686,7 +686,7 @@ def main():
         log.critical("Unhandled exception in main execution.", exc_info=True)
         sys.exit(1)
     finally:
-        log.info("Exiting main function.")
+        log.info("Shutting down.")
         if shutdown_event.is_set():
             sys.exit(1)
 
