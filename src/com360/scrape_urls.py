@@ -88,11 +88,9 @@ async def load_completed_urls(resume_file: Path) -> set[str]:
 
             completed = await asyncio.to_thread(read_file)
 
-    except Exception as e:
-        log.error(
-            "Failed to load resume file, starting fresh.",
-            path=resume_file,
-            error=str(e),
+    except Exception:
+        log.exception(
+            "Failed to load resume file, starting fresh.", path=resume_file
         )
         return set()
 
