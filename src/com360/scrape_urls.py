@@ -552,9 +552,9 @@ async def main_async(
             for _ in range(args.concurrency):
                 await queue.put(None)
 
-        log.info("Waiting for workers to process remaining queue items...")
+            log.info("Waiting for workers to process remaining queue items...")
 
-        await queue.join()
+            await queue.join()
 
         log.info("All queue items processed. Shutting down workers...")
         await asyncio.gather(*worker_tasks, return_exceptions=True)
