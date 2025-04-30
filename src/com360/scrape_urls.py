@@ -417,6 +417,10 @@ async def url_producer(
                     log.info("Queue size large, pausing producer briefly...")
                     await asyncio.sleep(1)
 
+                if shutdown_event.is_set():
+                    log.warning("Shutdown requested, stopping URL producer.")
+                    break
+
             log.debug(
                 f"Producer batch complete. Queued: {total_queued}, Skipped: {total_skipped}, Read: {total_read}"
             )
